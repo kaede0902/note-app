@@ -1,16 +1,43 @@
 import React, { Component } from 'react';
-import './App.css';
 import Note from './Note/Note';
+import NoteForm from './NoteForm/NoteForm';
+import { DB_CONFIG } from './Config/config';
+import firebase from 'firebase/app';
+import 'firebase/database';
+import './App.css';
+console.log(firebase);
 
 class App extends Component {
   constructor(props) {
     super(props);
+    this.addNote = this.addNote.bind(this);
+    this.app = firebase.initializeApp(DB_CONFIG);
+    this.db = this.app.database().ref().child('notes');
+
       this.state = {
         notes: [
-          {id:1, noteContent: "Note 1 here"},
-          {id:2, noteContent: "Note 2 here"},
         ],
     }
+  }
+
+  componentWillMount() {
+    const previousNotes = this.state.notes;
+    this.database.on('child_added', snap => {
+      previousNotes.push({
+        id: snap.key,
+        noteContent: snap.val().noteContent,
+      });
+      this.setState({
+        notes: previousNotes,
+      })
+    })
+  }
+
+  addNote(note) {
+    this.database.push().set(
+      { noteContent: note }
+    )
+    console.log(this.state.notes);
   }
 
   render() {
@@ -33,8 +60,8 @@ class App extends Component {
             )
           }
         </div>
-        <div className="footer">
-          Footer will go here...
+        <div className="notesFooter">
+          <NoteForm addNote={this.addNote}/>
         </div>
       </div>
     );
