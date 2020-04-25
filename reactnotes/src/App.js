@@ -18,9 +18,9 @@ class App extends Component {
   onCollectionUpdate = (querySnapshot) => {
     const notes = [];
     querySnapshot.forEach(doc =>{
-      const noteContent = doc.data();
+      const noteContent = doc.data().noteContent;
       notes.push({
-        key: doc.id,
+        id: doc.data().id,
         doc,
         noteContent,
       });
@@ -47,11 +47,18 @@ class App extends Component {
     this.db.push().set(
       { noteContent: note }
     )
-    console.log(this.state.notes);
   }
   //
   //                <Note noteContent={note.noteContent} 
   //                noteId={note.id} key={note.id}/>
+  ListItem(props) {
+    const numbers = props.numbers;
+    const listItems = numbers.map((number) => {
+      return (
+        <div key={number.id}>{number}</div>
+      );
+    );
+  }
 
   render() {
     return (
@@ -65,9 +72,14 @@ class App extends Component {
           {
             this.state.notes.map(
               (note) => {
+                console.log(note);
                 return(
-                  <h1>{note.key}</h1>
-                  <h2 key={note.id}>{note.noteContent}</h2>
+                  <div key= {note.id.toString()}>
+                    <h1>
+                      {note.id},
+                      {note.noteContent}
+                    </h1>
+                  </div>
                 )
               }
             )
