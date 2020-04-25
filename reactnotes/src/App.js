@@ -1,44 +1,57 @@
 import React, { Component } from 'react';
 import Note from './Note/Note';
 import NoteForm from './NoteForm/NoteForm';
-import { DB_CONFIG } from './Config/config';
+import 'firebase/firestore';
+import { firestore } from './Config/config';
 import firebase from 'firebase/app';
-import 'firebase/database';
 import './App.css';
-console.log(firebase);
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.addNote = this.addNote.bind(this);
-    this.app = firebase.initializeApp(DB_CONFIG);
-    this.db = this.app.database().ref().child('notes');
-
-      this.state = {
-        notes: [
-        ],
-    }
+    this.app = firebase.app();
+    this.ref = firebase.firestore().collection('notes');
+    this.unsubscribe = null;
+    this.state = {notes: []};
   }
-
-  componentWillMount() {
-    const previousNotes = this.state.notes;
-    this.database.on('child_added', snap => {
-      previousNotes.push({
-        id: snap.key,
-        noteContent: snap.val().noteContent,
+  onCollectionUpdate = (querySnapshot) => {
+    const notes = [];
+    querySnapshot.forEach(doc =>{
+      const noteContent = doc.data();
+      notes.push({
+        key: doc.id,
+        doc,
+        noteContent,
       });
-      this.setState({
-        notes: previousNotes,
-      })
-    })
+    });
+    this.setState({notes});
+  }
+  componentWillMount() {
+    this.unsubscribe = this.ref.onSnapshot(
+      this.onCollectionUpdate
+    );
+    //const previousNotes = this.state.notes;
+    //this.db.on('child_added', snap => {
+    //  previousNotes.push({
+    //    id: snap.key,
+    //    noteContent: snap.val().noteContent,
+    //  });
+    //  this.setState({
+    //    notes: previousNotes,
+    //  })
+    //})
   }
 
   addNote(note) {
-    this.database.push().set(
+    this.db.push().set(
       { noteContent: note }
     )
     console.log(this.state.notes);
   }
+  //
+  //                <Note noteContent={note.noteContent} 
+  //                noteId={note.id} key={note.id}/>
 
   render() {
     return (
@@ -53,8 +66,8 @@ class App extends Component {
             this.state.notes.map(
               (note) => {
                 return(
-                  <Note noteContent={note.noteContent} 
-                  noteId={note.id} key={note.id}/>
+                  <h1>{note.key}</h1>
+                  <h2 key={note.id}>{note.noteContent}</h2>
                 )
               }
             )
