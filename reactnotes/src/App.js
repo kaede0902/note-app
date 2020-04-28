@@ -49,16 +49,19 @@ class App extends Component {
     )
   }
   //
-  //                <Note noteContent={note.noteContent} 
-  //                noteId={note.id} key={note.id}/>
-  ListItem(props) {
-    const numbers = props.numbers;
-    const listItems = numbers.map((number) => {
-      return (
-        <div key={number.id}>{number}</div>
-      );
-    );
-  }
+// <Note noteContent={note.noteContent} 
+//  noteId={note.id} key={note.id}/>
+
+//  ListItem(props) {
+//    return <li>props.value</li>;
+//  } 
+//  NumberList(props) {
+//    const numbers = props.numbers;
+//    const listItems = numbers.map((number) => 
+//      <ListItem key={number.id}>{number} />
+//    );
+//  }
+
 
   render() {
     return (
@@ -74,12 +77,11 @@ class App extends Component {
               (note) => {
                 console.log(note);
                 return(
-                  <div key= {note.id.toString()}>
-                    <h1>
-                      {note.id},
-                      {note.noteContent}
-                    </h1>
-                  </div>
+                    <Note noteContent=
+                      {note.noteContent} 
+                      noteId={note.id} 
+                      key={note.id}
+                    />     
                 )
               }
             )
