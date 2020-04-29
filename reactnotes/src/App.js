@@ -10,7 +10,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.addNote = this.addNote.bind(this);
-    this.app = firebase.app();
     this.ref = firebase.firestore().collection('notes');
     this.unsubscribe = null;
     this.state = {notes: []};
@@ -44,13 +43,11 @@ class App extends Component {
   }
 
   addNote(note) {
-    this.db.push().set(
-      { noteContent: note }
-    )
+    this.ref.add({
+      id: this.state.notes.length + 1,
+      noteContent: note,
+    });
   }
-  //
-// <Note noteContent={note.noteContent} 
-//  noteId={note.id} key={note.id}/>
 
 //  ListItem(props) {
 //    return <li>props.value</li>;
