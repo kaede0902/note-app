@@ -18,10 +18,11 @@ class App extends Component {
     const notes = [];
     querySnapshot.forEach(doc =>{
       const noteContent = doc.data().noteContent;
+      const created_at = doc.data().created_at;
       notes.push({
-        id: doc.data().id,
-        doc,
+        created_at,
         noteContent,
+        doc,
       });
     });
     this.setState({notes});
@@ -43,12 +44,15 @@ class App extends Component {
   }
 
   addNote(note) {
+    const prevNote = note;
+    const created_at = new Date(); 
+    // add to firestore notes
     this.ref.add({
-      id: this.state.notes.length + 1,
-      noteContent: note,
+      created_at: created_at,
+      noteContent: prevNote,
     });
   }
-
+//  render should be in func?
 //  ListItem(props) {
 //    return <li>props.value</li>;
 //  } 
@@ -58,7 +62,6 @@ class App extends Component {
 //      <ListItem key={number.id}>{number} />
 //    );
 //  }
-
 
   render() {
     return (
@@ -76,8 +79,7 @@ class App extends Component {
                 return(
                     <Note noteContent=
                       {note.noteContent} 
-                      noteId={note.id} 
-                      key={note.id}
+                      key={note.created_at}
                     />     
                 )
               }
