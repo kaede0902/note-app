@@ -19,9 +19,11 @@ class App extends Component {
     querySnapshot.forEach(doc =>{
       const noteContent = doc.data().noteContent;
       const created_at = doc.data().created_at;
+      const id = doc.id
       notes.push({
         created_at,
         noteContent,
+        id,
         doc,
       });
     });
